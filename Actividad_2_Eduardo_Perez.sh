@@ -43,10 +43,10 @@ CAN_CONTROL_CURSOR=false # ¿El terminal soporta control avanzado del cursor (mo
 CAN_USE_COLORS=false     # ¿El terminal soporta al menos 8 colores?
 
 # --- Función: check_tput_capabilities ---
-# Propósito: Verifica la existencia del comando 'tput' y determina si el terminal
-#            soporta las capacidades necesarias para control avanzado del cursor
-#            y para el uso de colores. Actualiza las variables T_*, C_* y las banderas.
-#            También verifica la existencia del comando 'bc', necesario para la opción 1.
+# Verifica la existencia del comando 'tput' y determina si el terminal
+# soporta las capacidades necesarias para control avanzado del cursor
+# y para el uso de colores. Actualiza las variables T_*, C_* y las banderas.
+# También verifica la existencia del comando 'bc', necesario para la opción 1.
 check_tput_capabilities() {
     # Verifica si el comando 'tput' existe en el PATH.
     if command -v tput >/dev/null 2>&1; then
@@ -119,8 +119,9 @@ check_tput_capabilities() {
 }
 
 # --- Función: do_tput ---
-# Propósito: Ejecuta un comando 'tput' de forma segura, solo si 'tput' está disponible
-#            y la capacidad específica es soportada (para cursor y colores).
+# Ejecuta un comando 'tput' de forma segura, solo si 'tput' está disponible
+# y la capacidad específica es soportada (para cursor y colores).
+#
 # Argumentos: $1: Nombre de la capacidad de tput (ej: clear, cup, sc, rc, civis, cnorm, el, cols).
 #             $@: Parámetros adicionales para la capacidad (ej: fila y columna para 'cup'). 
 do_tput() {
@@ -168,8 +169,9 @@ do_tput() {
 }
 
 # --- Función auxiliar para imprimir con color ---
-# Propósito: Imprime texto aplicando un código de color si los colores están soportados,
-#            y opcionalmente evita añadir una nueva línea al final.
+# Imprime texto aplicando un código de color si los colores están soportados,
+# y opcionalmente evita añadir una nueva línea al final.
+#
 # Argumentos: $1: Código de color (una variable C_*) o cadena vacía para no usar color.
 #             $2: Texto a imprimir.
 #             $3: Si es "n", no añade una nueva línea al final.
@@ -224,9 +226,10 @@ print_section_footer() {
 }
 
 # --- Función countdown (con pausa - CORREGIDA v2) ---
-# Propósito: Muestra una cuenta regresiva en pantalla. Permite al usuario pausar
-#            la cuenta atrás presionando ESPACIO y salir de la cuenta (volver al menú)
-#            presionando ESC. Se adapta a terminales con y sin control de cursor.
+# Muestra una cuenta regresiva en pantalla. Permite al usuario pausar
+# la cuenta atrás presionando ESPACIO y salir de la cuenta (volver al menú)
+# presionando ESC. Se adapta a terminales con y sin control de cursor.
+#
 # Argumentos: $1: Número de segundos para la cuenta atrás.
 countdown() {
     local secs=$1      # Segundos restantes.
@@ -332,11 +335,10 @@ countdown() {
     fi
 }
 
-
 # --- Función para mostrar el menú estático (con colores) ---
-# Propósito: Limpia la pantalla y dibuja el menú principal con la información del sistema
-#            y las opciones disponibles. Calcula y guarda las coordenadas para la hora
-#            y el prompt de entrada si se soporta el control de cursor.
+# Limpia la pantalla y dibuja el menú principal con la información del sistema
+# y las opciones disponibles. Calcula y guarda las coordenadas para la hora
+# y el prompt de entrada si se soporta el control de cursor.
 display_initial_menu() {
     do_tput clear        # Limpia la pantalla
     local current_row=0  # Contador de filas
@@ -389,9 +391,9 @@ display_initial_menu() {
 }
 
 # --- Función para actualizar SOLO la hora en pantalla (con color) ---
-# Propósito: Si el control de cursor está activo, mueve el cursor a la posición
-#            guardada para la hora, la actualiza y vuelve a la posición original.
-#            Se llama repetidamente desde el bucle principal.
+# Si el control de cursor está activo, mueve el cursor a la posición
+# guardada para la hora, la actualiza y vuelve a la posición original.
+# Se llama repetidamente desde el bucle principal.
 update_time_display() {
     # Solo funciona si tenemos control de cursor y las coordenadas se calcularon.
     if ! $CAN_CONTROL_CURSOR || [[ -z "$time_row" ]] || [[ -z "$time_col" ]]; then return; fi
@@ -407,9 +409,9 @@ update_time_display() {
 }
 
 # --- Bucle Principal del Menú (con colores y nuevas funcionalidades) ---
-# Propósito: Gestiona la interacción principal con el usuario. Muestra el menú,
-#            actualiza la hora (si es posible), espera la entrada del usuario,
-#            ejecuta la acción seleccionada y vuelve a mostrar el menú.
+# Gestiona la interacción principal con el usuario. Muestra el menú,
+# actualiza la hora (si es posible), espera la entrada del usuario,
+# ejecuta la acción seleccionada y vuelve a mostrar el menú.
 do_main_loop() {
     # Oculta el cursor si es posible para una apariencia más limpia mientras se espera input.
     $CAN_CONTROL_CURSOR && do_tput civis
@@ -744,8 +746,8 @@ do_main_loop() {
 }
 
 # --- Manejo de Interrupciones (Ctrl+C) y Señales de Terminación ---
-# Propósito: Asegurar una salida limpia si el script es interrumpido (ej: Ctrl+C)
-#            o recibe una señal para terminar (SIGTERM).
+# Asegurar una salida limpia si el script es interrumpido (ej: Ctrl+C)
+# o recibe una señal para terminar (SIGTERM).
 # 'trap' ejecuta el comando entre comillas cuando recibe una de las señales listadas.
 trap "
     echo -e '\n' # Nueva línea para separar del posible estado actual
